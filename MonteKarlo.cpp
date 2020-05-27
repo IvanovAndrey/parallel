@@ -72,7 +72,8 @@ float consistentMethod() {
 		if (isInside(dotsX[i], dotsY[i], rounds))
 			dotsInside++;
 	}
-
+	delete[] dotsX;
+	delete[] dotsY;
 	// Вычисление площади
 	return square(area[0], area[1], area[2], area[3]) * dotsInside / numberOFDots;
 
@@ -136,7 +137,8 @@ float parallelMethod() {
 		if (isInside(dotsX[i], dotsY[i], rounds))
 			dotsInside++;
 	}
-
+	delete[] dotsX;
+	delete[] dotsY;
 	// Вычисление площади
 	return square(area[0], area[1], area[2], area[3]) * dotsInside / numberOFDots;
 

@@ -1,34 +1,55 @@
 #include "MonteKarlo.h"
 #include <chrono>
+#include <vector>
 using namespace std;
 using namespace std::chrono;
-std::chrono::time_point<std::chrono::system_clock> start, stop;
+time_point<system_clock> start, stop;
 
-void defaultSquare() {
+double defaultSquare() {
 	float result;
 	start = std::chrono::system_clock::now();
 	result = consistentMethod();
 	stop = std::chrono::system_clock::now();
 
-	cout<<"Default Time: "<< duration_cast<duration<double>>(stop - start).count()<<endl;
-	cout<<"Default Square: "<<result<<endl;
+	return duration_cast<duration<double>>(stop - start).count();
 }
 
-void openMPSquare() {
+double openMPSquare() {
 	float result;
 	start = std::chrono::system_clock::now();
 	result = parallelMethod();
 	stop = std::chrono::system_clock::now();
-
-	cout << "OpenMP Time: " << duration_cast<duration<double>>(stop - start).count() << endl;
-	cout << "OpenMP Square: " << result << endl;
+	return duration_cast<duration<double>>(stop - start).count();	
 }
 
 
 int main() {
-	float result1, result2;
 	srand(time(0));
+	vector<double> time(50);
 
-	defaultSquare();
-	openMPSquare();
+	int size = time.size();
+	for (auto i = 0; i < size; i++) {
+		time[i] = openMPSquare();
+	}
+
+	double avg = 0;
+	for (auto& n : time) 
+		avg += n;
+	avg /= size;
+
+
+	double d = 0;
+	for (auto& n : time) 
+	d += pow(avg - n, 2);
+	
+
+	d /= size == 1 ? 1 : size - 1;
+
+
+	double maxError = 2.6778 * pow(d / size, 0.5);
+	
+
+	cout << " : m = " << avg << " ms, d = " << d << endl;
+	cout << "99% interval: " << avg << " +- " << maxError << " ms" << endl << endl;
+
 }
